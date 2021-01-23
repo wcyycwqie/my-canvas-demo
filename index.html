@@ -2,8 +2,8 @@
  * @Author: 
  * @Date: 2021-01-21 09:57:21
  * @LastEditors: Chaoyue
- * @LastEditTime: 2021-01-22 15:09:58
- * @FilePath: \demoFive\index.html
+ * @LastEditTime: 2021-01-23 11:56:18
+ * @FilePath: \canvas-demo\index.html
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -28,43 +28,44 @@
 
 <body>
     <div class="container">
-        <canvas id="demo-canvas" width="500" height="380"></canvas>
+        <canvas id="canvas-one" width="600" height="430"></canvas>
+        <canvas id="canvas-two" width="600" height="430"></canvas>
+        <canvas id="canvas-three" width="600" height="430"></canvas>
     </div>
 </body>
 
 
 <script>
-    const canvas = document.getElementById('demo-canvas');
     class CanvasImg {
-        constructor(name, src) {
-            this.canvas = {};
+        constructor(id, src) {
+            this.canvas = document.getElementById(id);
             this.ctx = {};
             this.imageData = {};
             this.name = name;
-            this.width = canvas.width;
-            this.height = canvas.height;
+            this.width = this.canvas.width;
+            this.height = this.canvas.height;
             this.x = 0;
             this.y = 0;
             this.img = new Image();
             this.img.src = src;
             this.particleList = [];
-            this.cell_w = 3;
-            this.cell_h = 3;
+            this.cell_w = 4;
+            this.cell_h = 4;
             this.cols = parseInt(this.width / this.cell_w);
             this.rows = parseInt(this.height / this.cell_h);
             this.count = 0;
-            this.animateTime = 30;
+            this.animateTime = 400;
+            this.frameId = '';
             this.init();
         }
         init() {
             console.log('init');
-            this.canvas = document.getElementById('demo-canvas');
             this.ctx = this.canvas.getContext('2d');
             this.img.onload = () => {
                 this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
                 this.imageData = this.ctx.getImageData(this.x, this.y, this.width, this.height).data;
                 this.caculate();
-                this.drawImg();
+                this.step();
 
             }
         }
@@ -88,7 +89,8 @@
         }
         drawImg() {
             console.log('Draw');
-            this.ctx.clearRect(0, 0, this.width, this.height);
+            this.count++;
+            this.ctx.clearRect(this.x, this.y, this.width, this.height);
             for (let i = 0; i < this.particleList.length; i++) {
                 this.ctx.fillStyle = this.particleList[i].style;
                 this.particleList[i].c_x = this.easeInOutExpo(this.count, this.particleList[i].s_x, this
@@ -99,8 +101,14 @@
             }
         }
         step() {
-            this.ctx.clearRect(this.x, this.y, this.width, this.height);
-            drawImg()
+            this.count++;
+            this.drawImg();
+            this.frameId = window.requestAnimationFrame(this.step.bind(this));
+            if (this.count == this.animateTime) {
+                cancelAnimationFrame(this.frameId);
+            }
+
+
         }
         easeInOutExpo = (t, b, c, d) => {
             t /= d / 2;
@@ -126,7 +134,9 @@
     }
 
     function main() {
-        let img_I = new CanvasImg('MyCanvas', './02.png');
+        let img_I = new CanvasImg('canvas-one', './01.png');
+        let img_II = new CanvasImg('canvas-two', './02.png');
+        let img_III = new CanvasImg('canvas-three', './03.png');
     }
 
     main();
