@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2021-01-21 09:57:21
  * @LastEditors: Chaoyue
- * @LastEditTime: 2021-01-23 11:56:18
+ * @LastEditTime: 2021-02-02 17:08:02
  * @FilePath: \canvas-demo\index.html
 -->
 <!DOCTYPE html>
@@ -23,17 +23,22 @@
             height: 800px;
             /* background-color: #22222266; */
         }
+        .canvas-box {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <canvas id="canvas-one" width="600" height="430"></canvas>
-        <canvas id="canvas-two" width="600" height="430"></canvas>
-        <canvas id="canvas-three" width="600" height="430"></canvas>
+        <div class="canvas-box">
+            <canvas id="canvas-one" width="800" height="550"></canvas>
+
+        </div>
     </div>
 </body>
-
 
 <script>
     class CanvasImg {
@@ -54,7 +59,7 @@
             this.cols = parseInt(this.width / this.cell_w);
             this.rows = parseInt(this.height / this.cell_h);
             this.count = 0;
-            this.animateTime = 400;
+            this.animateTime = 280;
             this.frameId = '';
             this.init();
         }
@@ -64,6 +69,7 @@
             this.img.onload = () => {
                 this.ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
                 this.imageData = this.ctx.getImageData(this.x, this.y, this.width, this.height).data;
+                console.log(this.imageData);
                 this.caculate();
                 this.step();
 
@@ -76,11 +82,13 @@
                     let cell_index = [(y * this.cell_h) * this.width + (x * this.cell_w)] * 4;
                     let s_x = Math.floor(Math.random() * this.width * 1.5);
                     let s_y = Math.floor(Math.random() * this.height * 1.5);
+                    // s_x = 0;
+                    // s_y = this.height;
                     this.particleList.push(new Particle(x, y, this.cell_w, this.cell_h, cell_index, this.imageData,
                         (this.x + s_x), (this.y + s_y),
                         (this.x + x * this.cell_w), (this.y + y * this.cell_h)));
-                    if (x < 1 && y < 1) {
-                        console.log(this.particleList);
+                    if (x < 2 && y < 1) {
+                        console.log(this.imageData.slice(0, cell_index));
                         console.log(cell_index);
                     }
                 }
@@ -88,7 +96,6 @@
 
         }
         drawImg() {
-            console.log('Draw');
             this.count++;
             this.ctx.clearRect(this.x, this.y, this.width, this.height);
             for (let i = 0; i < this.particleList.length; i++) {
@@ -106,8 +113,8 @@
             this.frameId = window.requestAnimationFrame(this.step.bind(this));
             if (this.count == this.animateTime) {
                 cancelAnimationFrame(this.frameId);
-            }
 
+            }
 
         }
         easeInOutExpo = (t, b, c, d) => {
@@ -134,9 +141,7 @@
     }
 
     function main() {
-        let img_I = new CanvasImg('canvas-one', './01.png');
-        let img_II = new CanvasImg('canvas-two', './02.png');
-        let img_III = new CanvasImg('canvas-three', './03.png');
+        let img_I = new CanvasImg('canvas-one', './02.png');
     }
 
     main();
