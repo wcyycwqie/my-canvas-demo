@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2021-01-21 09:57:21
  * @LastEditors: Chaoyue
- * @LastEditTime: 2021-02-03 15:19:40
+ * @LastEditTime: 2021-02-07 15:41:20
  * @FilePath: \canvas-demo\index.html
 -->
 <!DOCTYPE html>
@@ -29,9 +29,11 @@
         .canvas-box {
             display: flex;
             justify-content: center;
+            align-items: flex-end;
             width: 100%;
             transform-origin: center;
         }
+
 
         @keyframes imgRoll {
             0% {
@@ -44,7 +46,6 @@
 
             100% {
                 transform: scale(0.5) rotate(360deg);
-
             }
         }
     </style>
@@ -53,12 +54,16 @@
 <body>
     <div class="container">
         <div class="canvas-box">
-            <canvas id="canvas-one" width="430" height="500"></canvas>
+            <div class="canvas-item">
+                <canvas id="canvas-one" width="430" height="500"></canvas>
+            </div>
         </div>
+
+
     </div>
 </body>
 
-<script src="./my-canvas.js"></script>
+<script src="./javascript/my-canvas.js"></script>
 <script>
     function main() {
         let img_I = new CanvasImg('canvas-one', './image/07.png');

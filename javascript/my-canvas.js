@@ -2,8 +2,8 @@
  * @Author: 
  * @Date: 2021-02-02 17:56:53
  * @LastEditors: Chaoyue
- * @LastEditTime: 2021-02-03 15:19:09
- * @FilePath: \canvas-demo\my-canvas.js
+ * @LastEditTime: 2021-02-07 16:53:40
+ * @FilePath: \canvas-demo\javascript\my-canvas.js
  */
 class CanvasImg {
     constructor(id, src) {
@@ -23,7 +23,7 @@ class CanvasImg {
         this.cols = parseInt(this.width / this.cell_w);
         this.rows = parseInt(this.height / this.cell_h);
         this.count = 0;
-        this.animateTime = 400;
+        this.animateTime = 500;
         this.frameId = '';
         this.init();
     }
