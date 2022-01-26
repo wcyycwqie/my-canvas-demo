@@ -2,7 +2,7 @@
  * @Author: Chaoyue
  * @Date: 2022-01-25 10:16:21
  * @LastEditors: Chaoyue
- * @LastEditTime: 2022-01-25 15:54:47
+ * @LastEditTime: 2022-01-26 11:43:07
  * @FilePath: \canvas-demo\bezierTest.html
 -->
 <!DOCTYPE html>
@@ -12,14 +12,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BezierTest</title>
+    <script src="./javascript/jquery-3.3.1.min.js"></script>
     <style>
         #cavasII {
             background-color: #181818
+        }
+
+        .data-box {
+            display: flex;
+        }
+
+        .data-box .data-I {
+            width: 1000px;
+        }
+
+        .data-box span {
+            font-size: 18px;
+            color: #222;
+            margin: 0 12px;
         }
     </style>
 </head>
 
 <body>
+    <section class="data-box">
+        <div class="data-I">
+            <span class="data-item"></span>
+            <span class="data-item"></span>
+            <span class="data-item"></span>
+            <span class="data-item"></span>
+        </div>
+        <div class="data-II">
+            <span class="data-item"></span>
+            <span class="data-item"></span>
+            <span class="data-item"></span>
+        </div>
+    </section>
+
     <canvas class="can" width="1000" height="1000"></canvas>
     <canvas id="cavasII" width="1000" height="1000"></canvas>
     <button>增加</button>
@@ -98,11 +127,23 @@
                 ctx.stroke();
             }
         }
+
+        function show_data() {
+            let dataIndex = 0;
+            for (const key in pointarr[0]) {
+                if (Object.hasOwnProperty.call(pointarr[0], key)) {
+                    const element = pointarr[0][key];
+                    $(`.data-box .data-I .data-item:eq(${dataIndex})`).html(`${key}(${element.x}, ${element.y})`)
+                    dataIndex++
+                }
+            }
+        }
         draw()
 
         function draw() {
-            draw_line();
+            draw_line()
             draw_control()
+            show_data()
         }
         //移动控制点
         canvas.onmousedown = function (e) {
@@ -272,9 +313,21 @@
             }
         }
 
+        const showDataFn = () => {
+            let dataIndex = 0;
+            for (const key in pointarrII[0]) {
+                if (Object.hasOwnProperty.call(pointarrII[0], key)) {
+                    const element = pointarrII[0][key];
+                    $(`.data-box .data-II .data-item:eq(${dataIndex})`).html(`${key}(${element.x}, ${element.y})`)
+                    dataIndex++
+                }
+            }
+        }
+
         const main_draw = () => {
             drawLineFn()
             drawPointFn()
+            showDataFn()
         }
 
         main_draw()
