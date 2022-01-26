@@ -1,0 +1,331 @@
+<!--
+ * @Author: Chaoyue
+ * @Date: 2022-01-25 10:16:21
+ * @LastEditors: Chaoyue
+ * @LastEditTime: 2022-01-25 15:54:47
+ * @FilePath: \canvas-demo\bezierTest.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BezierTest</title>
+    <style>
+        #cavasII {
+            background-color: #181818
+        }
+    </style>
+</head>
+
+<body>
+    <canvas class="can" width="1000" height="1000"></canvas>
+    <canvas id="cavasII" width="1000" height="1000"></canvas>
+    <button>增加</button>
+    <button>查看</button>
+
+    <script>
+        //用来存储三次贝塞尔曲线的控制点
+        var pointarr = [{
+            start: {
+                x: 120,
+                y: 240
+            },
+            c1: {
+                x: 350,
+                y: 90
+            },
+            c2: {
+                x: 340,
+                y: 390
+            },
+            end: {
+                x: 530,
+                y: 240
+            }
+        }]
+        var canvas = document.querySelector('.can')
+        var ctx = canvas.getContext('2d');
+
+        //绘制出控制点
+        function draw_control() {
+            for (var i = 0; i < pointarr.length; i++) {
+                var {
+                    start,
+                    c1,
+                    c2,
+                    end
+                } = pointarr[i];
+                ctx.strokeStyle = "#FF5533";
+                ctx.beginPath();
+                //绘制c1点与start点的连线
+                ctx.moveTo(start.x, start.y);
+                ctx.lineTo(c1.x, c1.y);
+                //绘制c2点与end点的连线
+                ctx.moveTo(c2.x, c2.y);
+                ctx.lineTo(end.x, end.y);
+                ctx.stroke()
+                ctx.closePath();
+                ctx.fillStyle = "#FF5533"
+                //绘制start点
+                ctx.moveTo(start.x, start.y);
+                ctx.arc(start.x, start.y, 5, 0, 2 * Math.PI);
+                ctx.fill()
+                //绘制c1点
+                ctx.moveTo(c1.x, c1.y);
+                ctx.arc(c1.x, c1.y, 10, 0, 2 * Math.PI);
+                ctx.fill()
+                //绘制c2点
+                ctx.moveTo(c2.x, c2.y);
+                ctx.arc(c2.x, c2.y, 10, 0, 2 * Math.PI);
+                ctx.fill()
+                //绘制end点
+                ctx.moveTo(end.x, end.y);
+                ctx.arc(end.x, end.y, 5, 0, 2 * Math.PI);
+                ctx.fill()
+            }
+        }
+        //绘制贝塞尔曲线
+        function draw_line() {
+            for (var i = 0; i < pointarr.length; i++) {
+                var point = pointarr[i];
+                ctx.beginPath();
+                ctx.moveTo(point.start.x, point.start.y);
+                ctx.bezierCurveTo(point.c1.x, point.c1.y, point.c2.x, point.c2.y, point.end.x, point.end.y);
+                ctx.strokeStyle = "#66CCFF";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+        draw()
+
+        function draw() {
+            draw_line();
+            draw_control()
+        }
+        //移动控制点
+        canvas.onmousedown = function (e) {
+            // movementx,layer
+            // if(e.layerX) 
+            // 判断选中的是哪个控制点
+            var index, name;
+            for (var i = 0; i < pointarr.length; i++) {
+                index = i
+                var {
+                    start,
+                    c1,
+                    c2,
+                    end
+                } = pointarr[i];
+                var tag = Math.abs(start.x - e.layerX) <= 5 && Math.abs(start.y - e.layerY) <= 5;
+                if (tag) {
+                    name = 'start'
+                    break;
+                }
+                var tag1 = Math.abs(c1.x - e.layerX) <= 10 && Math.abs(c1.y - e.layerY) <= 10;
+                if (tag1) {
+                    name = 'c1'
+                    break;
+                }
+                var tag2 = Math.abs(c2.x - e.layerX) <= 10 && Math.abs(c2.y - e.layerY) <= 10;
+                if (tag2) {
+                    name = 'c2';
+                    break;
+                }
+                var tag3 = Math.abs(end.x - e.layerX) <= 5 && Math.abs(end.y - e.layerY) <= 5;
+                if (tag3) {
+                    name = 'end';
+                    break;
+                }
+            }
+            if (!name) {
+                return
+            }
+            var {
+                x,
+                y
+            } = pointarr[index][name];
+            var space = {
+                x: e.layerX - x,
+                y: e.layerY - y
+            };
+            this.onmousemove = function (e) {
+                //根据鼠标与控制点的关系得到新的控制点的坐标
+                if (name) {
+                    // var {x,y} = pointarr[index][name]
+                    x = e.layerX - space.x;
+                    y = e.layerY - space.y;
+                    pointarr[index][name] = {
+                        x,
+                        y
+                    };
+                    var nxt = index + 1
+                    if (name == 'end' && pointarr[nxt]) {
+                        pointarr[nxt]['start'] = {
+                            x,
+                            y
+                        };
+                    }
+                    ctx.clearRect(0, 0, canvas.width, canvas.height)
+                    //绘制新的效果图
+                    draw()
+                }
+            }
+        }
+        canvas.onmouseup = function () {
+            this.onmousemove = function (e) {}
+        }
+
+        var btn = document.getElementsByTagName('button')[0];
+        var btnII = document.getElementsByTagName('button')[1];
+        //新增贝塞尔曲线
+        btn.onclick = function () {
+            var i = pointarr.length - 1;
+            var {
+                start,
+                end,
+                c1,
+                c2
+            } = JSON.parse(JSON.stringify(pointarr[i]));
+            var dis = end.y - start.y
+            start = JSON.parse(JSON.stringify(end));
+            end.y = end.y + dis;
+            c1.y = c1.y + dis;
+            c2.y = c2.y + dis;
+            var point = {
+                start,
+                c1,
+                c2,
+                end
+            };
+            pointarr.push(point);
+            draw()
+        }
+    </script>
+
+    <script>
+        const cavII = document.getElementById('cavasII');
+        const ctxII = cavII.getContext('2d');
+        const Pi = Math.PI
+        const pointarrII = [{
+            start: {
+                x: 220,
+                y: 250
+            },
+            control: {
+                x: 440,
+                y: 90
+            },
+            end: {
+                x: 680,
+                y: 250
+            }
+        }]
+
+        // 绘制控制点
+        const drawPointFn = () => {
+            for (let i = 0; i < pointarrII.length; i++) {
+                let {
+                    start,
+                    control,
+                    end
+                } = pointarrII[i];
+
+                // 绘制个点之间的连线
+                ctxII.beginPath()
+                ctxII.moveTo(start.x, start.y)
+                ctxII.lineTo(control.x, control.y)
+                ctxII.moveTo(end.x, end.y)
+                ctxII.lineTo(control.x, control.y)
+                ctxII.strokeStyle = '#F33311'
+                ctxII.stroke()
+                ctxII.closePath()
+
+                // 绘制点 
+                ctxII.beginPath()
+                ctxII.moveTo(start.x, start.y)
+                ctxII.arc(start.x, start.y, 5, 0, 2 * Pi)
+                ctxII.moveTo(end.x, end.y)
+                ctxII.arc(end.x, end.y, 5, 0, 2 * Pi)
+                ctxII.fillStyle = "#F00"
+                ctxII.fill()
+                ctxII.closePath()
+                ctxII.beginPath()
+                ctxII.moveTo(control.x, control.y)
+                ctxII.arc(control.x, control.y, 8, 0, 2 * Pi)
+                ctxII.fillStyle = "#2255BB"
+                ctxII.fill()
+                ctxII.closePath()
+            }
+        }
+
+        const drawLineFn = () => {
+            for (let i = 0; i < pointarrII.length; i++) {
+                let point = pointarrII[i];
+                ctxII.beginPath()
+                ctxII.moveTo(point.start.x, point.start.y)
+                ctxII.quadraticCurveTo(point.control.x, point.control.y, point.end.x, point.end.y);
+                ctxII.strokeStyle = "#FF0"
+                ctxII.lineWidth = 2
+                ctxII.stroke()
+            }
+        }
+
+        const main_draw = () => {
+            drawLineFn()
+            drawPointFn()
+        }
+
+        main_draw()
+
+        // control move
+        cavII.onmousedown = (e) => {
+            let index, name;
+            for (let i = 0; i < pointarrII.length; i++) {
+                index = i;
+                let {
+                    start,
+                    control,
+                    end
+                } = pointarrII[i];
+
+                if (Math.abs(start.x - e.layerX) <= 10 && Math.abs(start.y - e.layerY) <= 10) {
+                    name = 'start'
+                    break;
+                }
+                if (Math.abs(end.x - e.layerX) <= 10 && Math.abs(end.y - e.layerY) <= 10) {
+                    name = 'end';
+                    break
+                }
+                if (Math.abs(control.x - e.layerX) <= 10 && Math.abs(control.y - e.layerY) <= 10) {
+                    name = 'control';
+                    break
+                }
+
+            }
+            if (!name) {
+                return
+            }
+
+            cavII.onmousemove = (event) => {
+                if (name) {
+                    x = event.layerX
+                    y = event.layerY
+                    pointarrII[index][name] = {
+                        x,
+                        y
+                    }
+                }
+                ctxII.clearRect(0, 0, cavII.width, cavII.height)
+                main_draw()
+            }
+        }
+
+        cavII.onmouseup = () => {
+            cavII.onmousemove = (e) => {}
+        }
+    </script>
+</body>
+
+</html>

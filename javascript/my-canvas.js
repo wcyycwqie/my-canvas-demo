@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2021-02-02 17:56:53
  * @LastEditors: Chaoyue
- * @LastEditTime: 2021-02-07 16:53:40
+ * @LastEditTime: 2021-05-26 15:24:47
  * @FilePath: \canvas-demo\javascript\my-canvas.js
  */
 class CanvasImg {
@@ -18,13 +18,14 @@ class CanvasImg {
         this.img = new Image();
         this.img.src = src;
         this.particleList = [];
-        this.cell_w = 3;
-        this.cell_h = 3;
+        this.cell_w = 2;
+        this.cell_h = 2;
         this.cols = parseInt(this.width / this.cell_w);
         this.rows = parseInt(this.height / this.cell_h);
         this.count = 0;
         this.animateTime = 500;
         this.frameId = '';
+        this.drawEndFn= function() {};
         this.init();
     }
     init() {
@@ -70,13 +71,17 @@ class CanvasImg {
             this.particleList[i].c_y = this.easeInOutExpo(this.particleList[i].c_t, this.particleList[i].s_y, this
                 .particleList[i].e_y - this.particleList[i].s_y, this.animateTime);
 
-            if (r >= 0.8) {
-                this.ctx.fillStyle = `rgba(0, 180, 255)`;
+            if (r >= 0.6) {
+                // this.ctx.fillStyle = `rgba(0, 180, 255)`;
                 // this.ctx.fillStyle = `rgba(230, 245, 5)`;
             } else {}
             this.ctx.fillRect(this.particleList[i].c_x, this.particleList[i].c_y, this.particleList[i].p_w, this.particleList[i].p_h);
 
         }
+    }
+    drawEnd(callback) {
+        console.log('draw end');
+        callback()
     }
     step() {
         this.drawImg();
