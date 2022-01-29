@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2021-02-02 17:56:53
  * @LastEditors: Chaoyue
- * @LastEditTime: 2021-05-26 15:24:47
+ * @LastEditTime: 2022-01-29 18:18:46
  * @FilePath: \canvas-demo\javascript\my-canvas.js
  */
 class CanvasImg {
@@ -23,12 +23,12 @@ class CanvasImg {
         this.cols = parseInt(this.width / this.cell_w);
         this.rows = parseInt(this.height / this.cell_h);
         this.count = 0;
-        this.animateTime = 500;
+        this.animateTime = 400;
         this.frameId = '';
-        this.drawEndFn= function() {};
+        this.drawEndFn = function () { };
         this.init();
     }
-    init() {
+    init () {
         console.log('init');
         this.ctx = this.canvas.getContext('2d');
         this.img.onload = () => {
@@ -39,7 +39,7 @@ class CanvasImg {
             this.step();
         }
     }
-    caculate() {
+    caculate () {
         console.log('Caculate');
         for (let y = 0; y < this.rows; y++) {
             for (let x = 0; x < this.cols; x++) {
@@ -60,7 +60,7 @@ class CanvasImg {
         console.log(this.particleList.length);
 
     }
-    drawImg() {
+    drawImg () {
         this.ctx.clearRect(this.x, this.y, this.width, this.height);
         for (let i = 0; i < this.particleList.length; i++) {
             let r = Math.random()
@@ -71,19 +71,20 @@ class CanvasImg {
             this.particleList[i].c_y = this.easeInOutExpo(this.particleList[i].c_t, this.particleList[i].s_y, this
                 .particleList[i].e_y - this.particleList[i].s_y, this.animateTime);
 
-            if (r >= 0.6) {
+            if (r >= 0.9) {
                 // this.ctx.fillStyle = `rgba(0, 180, 255)`;
+            } else if (r <= 0.9 && r >= 0.8) {
                 // this.ctx.fillStyle = `rgba(230, 245, 5)`;
-            } else {}
+            } else { }
             this.ctx.fillRect(this.particleList[i].c_x, this.particleList[i].c_y, this.particleList[i].p_w, this.particleList[i].p_h);
 
         }
     }
-    drawEnd(callback) {
+    drawEnd (callback) {
         console.log('draw end');
         callback()
     }
-    step() {
+    step () {
         this.drawImg();
         this.count++;
         this.frameId = window.requestAnimationFrame(this.step.bind(this));
@@ -116,6 +117,6 @@ class Particle {
         this.y = y * cell_h + ((Math.random() - 0.5) * 20);
         this.c_t = Math.floor((Math.random() - 0.5) * 200);
         this.style =
-            `rgba(${imageData[cell_index]}, ${imageData[cell_index+1]}, ${imageData[cell_index+2]}, ${imageData[cell_index+3]})`
+            `rgba(${imageData[cell_index]}, ${imageData[cell_index + 1]}, ${imageData[cell_index + 2]}, ${imageData[cell_index + 3]})`
     }
 }
