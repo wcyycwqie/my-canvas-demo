@@ -2,7 +2,7 @@
  * @Author: Chaoyue
  * @Date: 2022-07-02 15:20:01
  * @LastEditors: Chaoyue
- * @LastEditTime: 2022-07-02 15:20:16
+ * @LastEditTime: 2022-07-04 18:26:33
  * @FilePath: \myDemo\canvas-demo\barrage.html
  * @FileDescribe: canvas弹幕功能
 -->
@@ -13,11 +13,54 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>弹幕功能</title>
+
+  <style>
+    * {
+      margin: 0;
+    }
+
+    body {
+      padding: 0;
+      width: 100%;
+    }
+
+    .canvas-view {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      min-height: 1200px;
+      background-color: rgb(26, 24, 24);
+    }
+
+    #canvas-I {
+      background-color: #111;
+      margin: 0 auto;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="canvas-view">
+    <canvas id="canvas-I" width="1280" height="1000"></canvas>
+  </div>
 
+  <script>
+    let canvasObj = document.getElementById('canvas-I')
+    let ctx = canvasObj.getContext('2d');
+
+    console.log(canvasObj);
+    console.log(ctx);
+    ctx.clearRect(0, 0, canvasObj.width, canvasObj.height)
+
+    ctx.strokeStyle = "#FF5533";
+    ctx.beginPath();
+    ctx.moveTo(10, 10);
+    ctx.font = "30px Arial";
+    ctx.fillStyle = '#FF0';
+    ctx.fillText("Hello World", 10, 50);
+    ctx.closePath();
+  </script>
 </body>
 
 </html>
