@@ -2,8 +2,8 @@
  * @Author: 
  * @Date: 2021-02-02 17:56:53
  * @LastEditors: Chaoyue
- * @LastEditTime: 2022-01-29 18:18:46
- * @FilePath: \canvas-demo\javascript\my-canvas.js
+ * @LastEditTime: 2022-07-06 15:13:26
+ * @FilePath: \myDemo\canvas-demo\javascript\my-canvas.js
  */
 class CanvasImg {
     constructor(id, src) {
